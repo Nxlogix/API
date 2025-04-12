@@ -5,6 +5,37 @@ usuario_bp = Blueprint('usuarios', __name__)
 
 @usuario_bp.route('/', methods=['POST'])
 def user_store():
+    """
+    Crear un nuevo usuario
+    ---
+    tags:
+      - Usuarios
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - email
+              - nombre
+              - password
+            properties:
+              email:
+                type: string
+                example: usuario@example.com
+              nombre:
+                type: string
+                example: Juan Pérez
+              password:
+                type: string
+                example: contrasena123
+    responses:
+      201:
+        description: Usuario creado exitosamente
+      400:
+        description: Faltan campos requeridos
+    """
     data = request.get_json()
     email = data.get('email')
     nombre = data.get('nombre')
@@ -15,8 +46,38 @@ def user_store():
     
     return create_usuario(nombre, email, password)
 
+
 @usuario_bp.route('/login', methods=['POST'])
 def login_usuario_route():
+    """
+    Iniciar sesión con un usuario existente
+    ---
+    tags:
+      - Usuarios
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - email
+              - password
+            properties:
+              email:
+                type: string
+                example: usuario@example.com
+              password:
+                type: string
+                example: contrasena123
+    responses:
+      200:
+        description: Inicio de sesión exitoso
+      400:
+        description: Datos de entrada incompletos
+      401:
+        description: Credenciales incorrectas
+    """
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
@@ -26,7 +87,34 @@ def login_usuario_route():
     
     return login_usuario(email, password)
 
-# Ruta para obtener todos los usuarios
+
 @usuario_bp.route('/obtener', methods=['GET'])
 def get_usuarios():
+    """
+    Obtener todos los usuarios
+    ---
+    tags:
+      - Usuarios
+    responses:
+      200:
+        description: Lista de usuarios obtenida exitosamente
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  nombre:
+                    type: string
+                    example: Juan Pérez
+                  email:
+                    type: string
+                    example: usuario@example.com
+      500:
+        description: Error del servidor
+    """
     return get_all_usuarios()
